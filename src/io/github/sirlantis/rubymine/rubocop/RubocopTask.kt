@@ -24,6 +24,7 @@ import org.jetbrains.plugins.ruby.gem.GemUtil
 import org.jetbrains.plugins.ruby.gem.util.BundlerUtil
 import org.jetbrains.plugins.ruby.gem.util.GemSearchUtil
 import org.jetbrains.plugins.ruby.ruby.sdk.RubySdkAdditionalData
+import java.util.LinkedList
 
 class RubocopTask(val module: Module, val paths: List<String>) : Task.Backgroundable(module.project, "Running RuboCop", true) {
 
@@ -170,7 +171,10 @@ class RubocopTask(val module: Module, val paths: List<String>) : Task.Background
 
         val rubocopPath = GemUtil.getGemExecutableRubyScriptPath(module, sdk, "rubocop",
                 "rubocop")!!
-        val commandLineList = linkedListOf(rubocopPath, "--format", "json")
+        val commandLineList = LinkedList<String>()
+        commandLineList.add(rubocopPath)
+        commandLineList.add("--format")
+        commandLineList.add("json")
         commandLineList.addAll(paths)
 
         val command = if (SystemInfo.isWindows && sdk.sdkAdditionalData is RubySdkAdditionalData) {
